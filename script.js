@@ -64,6 +64,22 @@ const heroTitle = document.querySelector('#hero-title');
 const heroName = document.querySelector('.hero-name');
 const heroNoteToggle = document.querySelector('#hero-note-toggle');
 const heroNote = document.querySelector('#hero-note');
+const heroKicker = document.querySelector('.hero-kicker');
+let lastHeroLetter = null;
+let lastHeroSpark = 0;
+
+function wrapHeroLetters(element) {
+  const text = element.textContent;
+  element.replaceChildren(...Array.from(text, (character) => {
+    const letter = document.createElement('span');
+    letter.className = 'hero-letter';
+    letter.textContent = character;
+    return letter;
+  }));
+}
+
+wrapHeroLetters(heroKicker);
+wrapHeroLetters(heroName);
 
 function releaseHeroPetals() {
   if (reduceMotion.matches) return;
@@ -91,6 +107,28 @@ heroTitle.addEventListener('pointerenter', (event) => {
   releaseHeroPetals();
 });
 heroTitle.addEventListener('pointerleave', () => heroTitle.classList.remove('is-blooming'));
+heroTitle.addEventListener('pointermove', (event) => {
+  if (event.pointerType === 'touch' || !finePointer.matches) return;
+  const letter = event.target.closest('.hero-letter');
+  if (letter && letter !== lastHeroLetter) {
+    lastHeroLetter?.classList.remove('is-hovered');
+    lastHeroLetter = letter;
+    letter.classList.remove('is-hovered');
+    void letter.offsetWidth;
+    letter.classList.add('is-hovered');
+  }
+
+  const now = performance.now();
+  if (!reduceMotion.matches && now - lastHeroSpark > 58) {
+    scatterBlossom(event.clientX, event.clientY, 7);
+    if (Math.random() > 0.52) scatterBlossom(event.clientX + 5, event.clientY - 4, 6);
+    lastHeroSpark = now;
+  }
+});
+heroTitle.addEventListener('pointerleave', () => {
+  lastHeroLetter?.classList.remove('is-hovered');
+  lastHeroLetter = null;
+});
 
 window.setTimeout(releaseHeroPetals, 1650);
 
