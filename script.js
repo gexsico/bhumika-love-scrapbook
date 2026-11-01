@@ -73,7 +73,7 @@ if (finePointer.matches) {
     const speed = Math.min(10, distance / Math.max(12, now - lastTrailTime) * 10);
     const tilt = Math.max(-18, Math.min(18, dx * 0.28));
 
-    tulipCursor.style.transform = `translate(${event.clientX - 22}px, ${event.clientY - 54}px) rotate(${tilt}deg)`;
+    tulipCursor.style.transform = `translate(${event.clientX - 16}px, ${event.clientY - 40}px) rotate(${tilt}deg)`;
 
     if (!reduceMotion.matches && distance > 10 && now - lastTrailTime > 24) {
       scatterBlossom(event.clientX - dx * 0.12, event.clientY - dy * 0.12, speed);
