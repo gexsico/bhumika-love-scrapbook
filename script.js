@@ -60,6 +60,40 @@ function scatterBlossom(x, y, speed) {
   }, life + 80);
 }
 
+const heroTitle = document.querySelector('#hero-title');
+const heroName = document.querySelector('.hero-name');
+const heroNoteToggle = document.querySelector('#hero-note-toggle');
+const heroNote = document.querySelector('#hero-note');
+
+function releaseHeroPetals() {
+  if (reduceMotion.matches) return;
+  const bounds = heroName.getBoundingClientRect();
+  const centerX = bounds.left + bounds.width * 0.55;
+  const centerY = bounds.top + bounds.height * 0.55;
+  for (let index = 0; index < 7; index += 1) {
+    window.setTimeout(() => {
+      scatterBlossom(centerX + (Math.random() - 0.5) * 58, centerY + (Math.random() - 0.5) * 28, 4);
+    }, index * 70);
+  }
+}
+
+heroNoteToggle.addEventListener('click', () => {
+  const isOpen = heroNoteToggle.getAttribute('aria-expanded') === 'true';
+  heroNoteToggle.setAttribute('aria-expanded', String(!isOpen));
+  heroNote.setAttribute('aria-hidden', String(isOpen));
+  heroNote.classList.toggle('is-open', !isOpen);
+  heroNoteToggle.querySelector('.note-toggle-label').textContent = isOpen ? 'open a little note' : 'close this little note';
+});
+
+heroTitle.addEventListener('pointerenter', (event) => {
+  if (event.pointerType === 'touch' || !finePointer.matches) return;
+  heroTitle.classList.add('is-blooming');
+  releaseHeroPetals();
+});
+heroTitle.addEventListener('pointerleave', () => heroTitle.classList.remove('is-blooming'));
+
+window.setTimeout(releaseHeroPetals, 1650);
+
 if (finePointer.matches) {
   document.body.classList.add('tulip-active');
 
